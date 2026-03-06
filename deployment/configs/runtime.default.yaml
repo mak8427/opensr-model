@@ -35,6 +35,7 @@ slurm:
   partition: null
   gpu_type: null
   gpus: 1
+  gres: null
   cpus_per_task: 8
   mem_gb: 128
   time: "01:00:00"

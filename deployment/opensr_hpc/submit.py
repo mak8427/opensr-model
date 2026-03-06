@@ -49,10 +49,12 @@ def submit_patch_run(
 ) -> tuple[str, Path, dict[str, str]]:
     run_id = new_run_id(config.project_name)
     run_dir = resolve_run_dir(config.output_root, run_id)
+    logs_dir = run_dir / "logs"
     patch_root = patch_dir(run_dir, patch.patch_id)
     input_tif = patch_root / "inputs" / "lr.tif"
 
     run_dir.mkdir(parents=True, exist_ok=True)
+    logs_dir.mkdir(parents=True, exist_ok=True)
     write_yaml(run_dir / "resolved_config.yaml", runtime_config_to_dict(config))
 
     if not dry_run:
@@ -90,8 +92,8 @@ def submit_patch_run(
         job_name=f"opensr_{patch.patch_id}",
         script_path=script_path,
         manifest_path=manifest_path,
-        output_path=run_dir / "logs" / f"slurm_{patch.patch_id}.out",
-        error_path=run_dir / "logs" / f"slurm_{patch.patch_id}.err",
+        output_path=logs_dir / f"slurm_{patch.patch_id}.out",
+        error_path=logs_dir / f"slurm_{patch.patch_id}.err",
         slurm=config.slurm,
         environment=config.environment,
     )
@@ -111,6 +113,8 @@ def submit_grid_run(
     run_id = new_run_id(config.project_name)
     run_dir = resolve_run_dir(config.output_root, run_id)
     run_dir.mkdir(parents=True, exist_ok=True)
+    logs_dir = run_dir / "logs"
+    logs_dir.mkdir(parents=True, exist_ok=True)
     write_yaml(run_dir / "resolved_config.yaml", runtime_config_to_dict(config))
 
     tasks: list[dict[str, object]] = []
@@ -157,8 +161,8 @@ def submit_grid_run(
         job_name=f"opensr_{run_id}",
         script_path=script_path,
         manifest_path=run_dir / "run_manifest.yaml",
-        output_path=run_dir / "logs" / "slurm_%A_%a.out",
-        error_path=run_dir / "logs" / "slurm_%A_%a.err",
+        output_path=logs_dir / "slurm_%A_%a.out",
+        error_path=logs_dir / "slurm_%A_%a.err",
         slurm=config.slurm,
         environment=config.environment,
         array=f"0-{len(tasks) - 1}" if tasks else None,

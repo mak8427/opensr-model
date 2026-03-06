@@ -35,6 +35,7 @@ slurm:
   partition: "gpu"
   gpu_type: "a100"
   gpus: 1
+  gres: null
   cpus_per_task: 16
   mem_gb: 192
   time: "02:00:00"

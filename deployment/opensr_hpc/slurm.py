@@ -39,7 +39,9 @@ def build_sbatch_command(spec: SlurmJobSpec) -> list[str]:
     ]
     if spec.slurm.partition:
         cmd.append(f"--partition={spec.slurm.partition}")
-    if spec.slurm.gpus:
+    if spec.slurm.gres:
+        cmd.append(f"--gres={spec.slurm.gres}")
+    elif spec.slurm.gpus:
         if spec.slurm.gpu_type:
             cmd.append(f"--gpus={spec.slurm.gpu_type}:{spec.slurm.gpus}")
         else:
@@ -73,8 +75,25 @@ def submit_job(spec: SlurmJobSpec, submission_dir: Path, dry_run: bool = False) 
         write_json(submission_dir / "slurm_job_ids.json", payload)
         return payload
 
-    result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+    try:
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as exc:
+        payload = {
+            "command": " ".join(cmd),
+            "returncode": str(exc.returncode),
+            "stdout": (exc.stdout or "").strip(),
+            "stderr": (exc.stderr or "").strip(),
+        }
+        write_json(submission_dir / "slurm_job_ids.json", {"mode": "error", **payload})
+        stderr = payload["stderr"] or "<empty stderr>"
+        stdout = payload["stdout"] or "<empty stdout>"
+        raise RuntimeError(
+            "sbatch submission failed. "
+            f"stderr: {stderr}. stdout: {stdout}. "
+            f"Command saved to {submission_dir / 'sbatch_command.txt'}"
+        ) from exc
+
     job_id = parse_job_id(result.stdout)
-    payload = {"job_id": job_id, "stdout": result.stdout.strip()}
+    payload = {"job_id": job_id, "stdout": result.stdout.strip(), "stderr": result.stderr.strip()}
     write_json(submission_dir / "slurm_job_ids.json", payload)
     return payload
