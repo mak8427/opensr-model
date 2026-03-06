@@ -1,0 +1,43 @@
+project_name: "opensr"
+output_root: "../../runs"
+
+environment:
+  python_executable: "python"
+  modules: []
+  conda_env: null
+
+model:
+  config_path: null
+  checkpoint_path: null
+
+staging:
+  collection: "sentinel-2-l2a"
+  bands: ["B04", "B03", "B02", "B08"]
+  image_index: 0
+  edge_size: 4096
+  resolution: 10
+  nodata: 0
+  output_dtype: "uint16"
+  compression: "deflate"
+  overlap_meters: 128.0
+  retry_on_rate_limit: true
+  rate_limit_retry_delays_seconds: [15, 30, 60, 120, 120, 120]
+
+inference:
+  factor: 4
+  window_size: [128, 128]
+  overlap: 12
+  eliminate_border_px: 2
+  gpus: 0
+  save_preview: false
+
+slurm:
+  partition: null
+  gpu_type: null
+  gpus: 1
+  cpus_per_task: 8
+  mem_gb: 128
+  time: "01:00:00"
+  account: null
+  qos: null
+  extra_args: []
