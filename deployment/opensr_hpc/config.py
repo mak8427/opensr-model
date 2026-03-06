@@ -44,6 +44,7 @@ class StagingConfig:
 class InferenceConfig:
     factor: int = 4
     window_size: tuple[int, int] = (128, 128)
+    batch_size: int = 16
     overlap: int = 12
     eliminate_border_px: int = 2
     gpus: int | list[int] = 0
@@ -55,6 +56,7 @@ class SlurmConfig:
     partition: str | None = None
     gpu_type: str | None = None
     gpus: int = 1
+    gres: str | None = None
     cpus_per_task: int = 8
     mem_gb: int = 128
     time: str = "01:00:00"
@@ -170,6 +172,8 @@ def validate_runtime_config(config: RuntimeConfig) -> None:
         raise ValueError("inference.factor must be positive")
     if len(config.inference.window_size) != 2 or min(config.inference.window_size) <= 0:
         raise ValueError("inference.window_size must contain two positive integers")
+    if config.inference.batch_size <= 0:
+        raise ValueError("inference.batch_size must be positive")
     if config.slurm.gpus < 0:
         raise ValueError("slurm.gpus must be non-negative")
     if config.slurm.mem_gb <= 0:

@@ -41,6 +41,7 @@ def run_task(manifest_path: Path, task_index: int | None = None) -> Path:
     inference = InferenceConfig(
         factor=config["inference"]["factor"],
         window_size=tuple(config["inference"]["window_size"]),
+        batch_size=config["inference"].get("batch_size", 16),
         overlap=config["inference"]["overlap"],
         eliminate_border_px=config["inference"]["eliminate_border_px"],
         gpus=config["inference"]["gpus"],

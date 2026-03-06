@@ -26,6 +26,7 @@ staging:
 inference:
   factor: 4
   window_size: [128, 128]
+  batch_size: 16
   overlap: 12
   eliminate_border_px: 2
   gpus: 0
