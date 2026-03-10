@@ -137,7 +137,7 @@ def _handle_run_task(args: argparse.Namespace) -> int:
     if task_index is None and os.environ.get("SLURM_ARRAY_TASK_ID"):
         task_index = int(os.environ["SLURM_ARRAY_TASK_ID"])
     output = run_task(Path(args.manifest).resolve(), task_index=task_index)
-    print(output)
+    print(output if output is not None else "skipped")
     return 0
 
 

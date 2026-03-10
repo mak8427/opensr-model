@@ -71,6 +71,8 @@ def build_patches(
     overlap_meters: float,
 ) -> list[Patch]:
     lat_min, lat_max = sorted((lat1, lat2))
+    if abs(lon2 - lon1) > 180.0:
+        raise ValueError("Bounding boxes that cross the antimeridian are not supported")
     lon_min, lon_max = sorted((lon1, lon2))
 
     if edge_size <= 0:

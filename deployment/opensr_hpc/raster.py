@@ -72,3 +72,27 @@ def compress_geotiff(src_path: Path, dest_path: Path) -> Path:
         NUM_THREADS="ALL_CPUS",
     )
     return dest_path
+
+
+def raster_validity_stats(tif_path: Path) -> dict[str, int]:
+    import rasterio
+
+    with rasterio.open(tif_path) as src:
+        data = src.read(masked=True)
+
+    if data.size == 0:
+        return {"total_pixels": 0, "valid_pixels": 0, "nonzero_pixels": 0}
+
+    values = np.asarray(np.ma.getdata(data))
+    validity_mask = np.isfinite(values)
+    if np.ma.isMaskedArray(data):
+        validity_mask &= ~np.ma.getmaskarray(data)
+
+    total_pixels = int(values.shape[-2] * values.shape[-1])
+    valid_pixels = int(validity_mask.any(axis=0).sum())
+    nonzero_pixels = int((validity_mask & (values != 0)).any(axis=0).sum())
+    return {
+        "total_pixels": total_pixels,
+        "valid_pixels": valid_pixels,
+        "nonzero_pixels": nonzero_pixels,
+    }
