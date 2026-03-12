@@ -117,6 +117,13 @@ def _handle_submit_grid(args: argparse.Namespace) -> int:
         float(config.staging.resolution),
         config.staging.overlap_meters,
     )
+    if len(patches) > 1:
+        logger.info(
+            "grid request uses multiple cubo cutouts (%d); cutouts overlap via staging.overlap_meters, "
+            "but overlapping SR outputs are not reconciled after inference, so downstream mosaics may show seams "
+            "at cutout boundaries",
+            len(patches),
+        )
     run_id, run_dir, submission = submit_grid_run(
         config=config,
         patches=patches,
