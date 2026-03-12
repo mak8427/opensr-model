@@ -11,6 +11,8 @@ client_secret.json
 *.DS_Store
 example_images/
 client_secret.json
+test_slurm.sh
+runs/
 
 *.svg
 old/

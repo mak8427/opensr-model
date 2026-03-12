@@ -44,7 +44,7 @@ class StagingConfig:
 class InferenceConfig:
     factor: int = 4
     window_size: tuple[int, int] = (128, 128)
-    batch_size: int = 16
+    batch_size: int = 2
     overlap: int = 12
     eliminate_border_px: int = 2
     gpus: int | list[int] = 0

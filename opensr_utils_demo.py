@@ -9,7 +9,7 @@ What this shows (without changing your actual code):
   • What each key parameter does in practice (windowing, overlap, device routing, etc.).
 
 Prereqs
-  • Python ≥3.10 recommended.
+  • Python ≥3.12 recommended.
   • CUDA GPU (for speed), recent PyTorch build with CUDA.
   • `opensr-model` installed and its checkpoints accessible (see `ckpt_version` in YAML).
   • `opensr-utils` > 1.0.0 (this demo uses the newer large-file pipeline).
