@@ -27,4 +27,21 @@ setup(
     'requests',
     'omegaconf',
 	'matplotlib'],
+    extras_require={
+        'hpc': [
+            'PyYAML>=6.0',
+            'pyproj>=3.4',
+            'rioxarray>=0.15',
+            'cubo>=0.3',
+            'opensr-utils>=1.0.0',
+        ],
+    },
+    entry_points={
+        'console_scripts': [
+            'opensr-hpc=deployment.opensr_hpc.cli:main',
+        ],
+    },
+    package_data={
+        'deployment.opensr_hpc': ['slurm/*.sh'],
+    },
 )

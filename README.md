@@ -16,6 +16,7 @@
 - [🚀 1. Interactive Notebooks - Google Colab](#1--google-colab-demos--interactive-notebooks)
 - [🛠️ 2. Install and Usage - Local](#2-install-and-usage---local)
   - [🧱 2.1 Weights and Checkpoints](#21-weights-and-checkpoints)
+  - [🖥️ 2.2 HPC and Slurm Launcher](#22-hpc-and-slurm-launcher)
 - [🖼️ 3. Super-Resolution Examples](#3-super-resolution-examples)
   - [🛰️ 3.1 Example SR Image](#31-example-sr-image)
   - [🔎 3.2 Demo File and Uncertainty Calculation](#32-demo-file-and-uncertainty-calculation)
@@ -67,6 +68,32 @@ sr = model.forward(torch.rand(1,4,128,128), sampling_steps=100) # run SR
 
 ### 2.1 🧱 Weights and Checkpoints
 The model should load automatically with the `model.load_pretrained` command. Alternatively, the checkpoints can be found on [HuggingFace](https://huggingface.co/simon-donike/RS-SR-LTDF/tree/main).
+
+### 2.2 🖥️ HPC and Slurm Launcher
+
+For cluster workflows, this repository now also ships an installable HPC launcher built around `cubo`, `opensr-model`, `opensr-utils`, and Slurm.
+
+Install the optional extras:
+
+```bash
+pip install -e .[hpc]
+```
+
+This exposes the `opensr-hpc` CLI:
+
+```bash
+opensr-hpc validate-config --config deployment/configs/runtime.default.yaml
+
+opensr-hpc submit patch \
+  --config deployment/configs/runtime.default.yaml \
+  --lat 52.5200 \
+  --lon 13.4050 \
+  --start-date 2025-07-01 \
+  --end-date 2025-07-03 \
+  --dry-run
+```
+
+See `deployment/README.md` for the full run layout, config schema, and Slurm entrypoint details.
 
 
 # 3. 🖼️ Super-Resolution Examples
