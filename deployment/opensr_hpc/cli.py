@@ -199,8 +199,10 @@ def _handle_submit_aoi(args: argparse.Namespace) -> int:
 
 
 def _handle_run_task(args: argparse.Namespace) -> int:
+    from deployment.opensr_hpc.logging_utils import configure_logging
     from deployment.opensr_hpc.run_task import run_task
 
+    configure_logging()
     task_index = args.task_index
     if task_index is None and os.environ.get("SLURM_ARRAY_TASK_ID"):
         task_index = int(os.environ["SLURM_ARRAY_TASK_ID"])
